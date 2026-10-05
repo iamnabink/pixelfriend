@@ -1,0 +1,238 @@
+{
+  "name": "pixelfriend",
+  "displayName": "PixelFriend",
+  "description": "A playful pixel companion that reminds you to drink water and celebrates when you do.",
+  "version": "0.3.0",
+  "publisher": "whoamie",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "hydration",
+    "reminder",
+    "pixel",
+    "companion",
+    "productivity"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "pixelfriend",
+          "title": "PixelFriend",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "pixelfriend": [
+        {
+          "type": "webview",
+          "id": "pixelfriend.avatarView",
+          "name": "Buddy"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "pixelfriend.openAvatar",
+        "title": "Open Buddy in Editor",
+        "category": "PixelFriend",
+        "icon": "$(smiley)"
+      },
+      {
+        "command": "pixelfriend.openSettings",
+        "title": "Open Settings",
+        "category": "PixelFriend",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "pixelfriend.drinkNow",
+        "title": "I Drank Water!",
+        "category": "PixelFriend"
+      },
+      {
+        "command": "pixelfriend.remindNow",
+        "title": "Show Reminder Now",
+        "category": "PixelFriend"
+      },
+      {
+        "command": "pixelfriend.togglePause",
+        "title": "Pause / Resume Reminders",
+        "category": "PixelFriend"
+      },
+      {
+        "command": "pixelfriend.uploadSprite",
+        "title": "Upload Custom Sprite Sheet",
+        "category": "PixelFriend"
+      },
+      {
+        "command": "pixelfriend.resetSprite",
+        "title": "Reset to Default Avatar",
+        "category": "PixelFriend"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "pixelfriend.openSettings",
+          "when": "view == pixelfriend.avatarView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "pixelfriend.openAvatar",
+          "when": "view == pixelfriend.avatarView",
+          "group": "navigation@2"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "PixelFriend",
+      "properties": {
+        "pixelfriend.reminderIntervalMinutes": {
+          "type": "number",
+          "default": 60,
+          "minimum": 1,
+          "maximum": 480,
+          "description": "How often (in minutes) PixelFriend asks you to drink water."
+        },
+        "pixelfriend.snoozeMinutes": {
+          "type": "number",
+          "default": 5,
+          "minimum": 1,
+          "maximum": 120,
+          "description": "How long \"Remind me later\" postpones the reminder."
+        },
+        "pixelfriend.soundsEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Play a gentle sound on reminders and celebrations."
+        },
+        "pixelfriend.showOnStartup": {
+          "type": "boolean",
+          "default": true,
+          "description": "Open the Buddy view automatically when VS Code starts."
+        },
+        "pixelfriend.avatar.style": {
+          "type": "string",
+          "enum": [
+            "cartoon",
+            "pixel"
+          ],
+          "enumDescriptions": [
+            "2D cartoon character that speaks and lip-syncs",
+            "Tiny walking pixel buddy"
+          ],
+          "default": "cartoon",
+          "description": "Which avatar to show."
+        },
+        "pixelfriend.avatar.scale": {
+          "type": "number",
+          "default": 4,
+          "minimum": 2,
+          "maximum": 10,
+          "description": "Pixel size multiplier for the avatar."
+        },
+        "pixelfriend.avatar.speed": {
+          "type": "number",
+          "default": 1,
+          "minimum": 0.25,
+          "maximum": 4,
+          "description": "Walking speed multiplier."
+        },
+        "pixelfriend.avatar.shirtColor": {
+          "type": "string",
+          "default": "#F28C28",
+          "description": "Shirt / hoodie color of the avatar (hex)."
+        },
+        "pixelfriend.avatar.hairColor": {
+          "type": "string",
+          "default": "#4A2C1A",
+          "description": "Hair color of the avatar (hex)."
+        },
+        "pixelfriend.avatar.skinColor": {
+          "type": "string",
+          "default": "#F3C8A2",
+          "description": "Skin color of the avatar (hex)."
+        },
+        "pixelfriend.avatar.pantsColor": {
+          "type": "string",
+          "default": "#3E6192",
+          "description": "Pants / jeans color of the avatar (hex)."
+        },
+        "pixelfriend.sprite.path": {
+          "type": "string",
+          "default": "",
+          "description": "Absolute path to a custom PNG sprite sheet. Leave empty to use the built-in avatar. Use the \"Upload Custom Sprite Sheet\" command to set this safely."
+        },
+        "pixelfriend.sprite.frameWidth": {
+          "type": "number",
+          "default": 32,
+          "minimum": 1,
+          "description": "Width in pixels of a single frame in the custom sprite sheet."
+        },
+        "pixelfriend.sprite.frameHeight": {
+          "type": "number",
+          "default": 32,
+          "minimum": 1,
+          "description": "Height in pixels of a single frame in the custom sprite sheet."
+        },
+        "pixelfriend.sprite.walkFrames": {
+          "type": "number",
+          "default": 4,
+          "minimum": 1,
+          "description": "Number of frames in row 1 (walking) of the custom sprite sheet."
+        },
+        "pixelfriend.sprite.waveFrames": {
+          "type": "number",
+          "default": 2,
+          "minimum": 1,
+          "description": "Number of frames in row 2 (waving) of the custom sprite sheet."
+        },
+        "pixelfriend.sprite.danceFrames": {
+          "type": "number",
+          "default": 4,
+          "minimum": 1,
+          "description": "Number of frames in row 3 (dancing) of the custom sprite sheet."
+        },
+        "pixelfriend.sprite.fps": {
+          "type": "number",
+          "default": 8,
+          "minimum": 1,
+          "maximum": 30,
+          "description": "Frames per second for custom sprite sheet animations."
+        },
+        "pixelfriend.stateFilePath": {
+          "type": "string",
+          "default": "",
+          "description": "Where PixelFriend writes its state file for the Activ menu bar app. Leave empty for the default (~/Library/Application Support/PixelFriend/state.json on macOS)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.24.0",
+    "three": "^0.170.0",
+    "typescript": "^5.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iamnabink/pixelfriend"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@pixelfriend/character",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Shared 2D cartoon character engine (SVG + JS) used by the PixelFriend VS Code extension and the Activ macOS app.",
+  "main": "dist/character.bundle.js",
+  "scripts": {
+    "build": "esbuild src/character.js --bundle --format=iife --minify --outfile=dist/character.bundle.js",
+    "dev": "python3 -m http.server 8765 --bind 127.0.0.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  }
+}

@@ -1,0 +1,137 @@
+:root {
+  --pf-ground: color-mix(in srgb, var(--vscode-editor-foreground) 12%, transparent);
+  --pf-bubble-bg: var(--vscode-editorWidget-background, #252526);
+  --pf-bubble-fg: var(--vscode-editorWidget-foreground, #ddd);
+  --pf-bubble-border: var(--vscode-widget-border, rgba(128,128,128,0.35));
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  color: var(--vscode-foreground);
+  font-family: var(--vscode-font-family);
+  font-size: var(--vscode-font-size, 13px);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+#stage {
+  position: relative;
+  flex: 1;
+  min-height: 120px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#avatar {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  transition: filter 120ms ease;
+}
+
+#stage:hover #avatar {
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--vscode-focusBorder) 60%, transparent));
+}
+
+#ground {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--pf-ground);
+}
+
+.bubble {
+  position: absolute;
+  bottom: 0; /* positioned by script */
+  left: 0;
+  transform: translate(-50%, 0) scale(1);
+  background: var(--pf-bubble-bg);
+  color: var(--pf-bubble-fg);
+  border: 1px solid var(--pf-bubble-border);
+  border-radius: 10px;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  animation: pf-pop 260ms cubic-bezier(0.2, 1.4, 0.4, 1) both;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.bubble::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 10px;
+  height: 10px;
+  background: var(--pf-bubble-bg);
+  border-right: 1px solid var(--pf-bubble-border);
+  border-bottom: 1px solid var(--pf-bubble-border);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.bubble.hidden { display: none; }
+
+#bubble-text {
+  font-weight: 700;
+  font-size: 1.15em;
+  letter-spacing: 0.02em;
+}
+
+#bubble-sub {
+  font-size: 0.85em;
+  opacity: 0.75;
+}
+
+#bubble-sub:empty { display: none; }
+
+@keyframes pf-pop {
+  from { transform: translate(-50%, 8px) scale(0.6); opacity: 0; }
+  to   { transform: translate(-50%, 0) scale(1); opacity: 1; }
+}
+
+#footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 8px 6px;
+  font-size: 0.85em;
+  opacity: 0.8;
+}
+
+#settings-btn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1.1em;
+  padding: 2px 4px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+#settings-btn:hover {
+  background: var(--vscode-toolbar-hoverBackground);
+}
+
+#settings-btn:focus-visible {
+  outline: 1px solid var(--vscode-focusBorder);
+}

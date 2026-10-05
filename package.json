@@ -1,0 +1,16 @@
+{
+  "name": "pixelfriend-monorepo",
+  "private": true,
+  "description": "PixelFriend: a hydration buddy for VS Code (pixelfriend/), its macOS menu bar companion Activ (activ/), and the shared cartoon character engine (character/).",
+  "workspaces": [
+    "character",
+    "pixelfriend"
+  ],
+  "scripts": {
+    "build": "npm run build:character && npm run build:extension && npm run build:activ",
+    "build:character": "npm run build --workspace character && cp character/dist/character.bundle.js pixelfriend/media/character/",
+    "build:extension": "npm run compile --workspace pixelfriend",
+    "package:extension": "cd pixelfriend && npx @vscode/vsce package --allow-missing-repository",
+    "build:activ": "cd activ && ./build-app.sh"
+  }
+}

@@ -1,0 +1,38 @@
+html, body {
+  margin: 0; padding: 0; height: 100%; overflow: hidden;
+  color: var(--vscode-foreground);
+  font-family: var(--vscode-font-family);
+  font-size: var(--vscode-font-size, 13px);
+  background: transparent;
+}
+body { display: flex; flex-direction: column; }
+#stage {
+  position: relative; flex: 1; min-height: 160px; cursor: pointer;
+  background: radial-gradient(120% 90% at 50% 20%, #2b3148 0%, #141827 60%, #0d101a 100%);
+  border-radius: 10px; margin: 6px 6px 0; overflow: hidden;
+  user-select: none; -webkit-user-select: none;
+}
+#character { position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: center; }
+#character svg { width: 100%; height: 100%; }
+.caption {
+  position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%);
+  background: rgba(0,0,0,0.55); color: #fff; padding: 5px 10px; border-radius: 8px;
+  font-weight: 600; white-space: nowrap; pointer-events: none;
+  animation: pf-pop 260ms cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.bubble {
+  position: absolute; left: 50%; top: 10px; transform: translateX(-50%);
+  background: var(--vscode-editorWidget-background, #252526); color: var(--vscode-editorWidget-foreground, #ddd);
+  border: 1px solid var(--vscode-widget-border, rgba(128,128,128,0.35)); border-radius: 10px; padding: 6px 12px;
+  display: flex; flex-direction: column; align-items: center; gap: 2px; white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25); pointer-events: none;
+  animation: pf-pop 260ms cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+#bubble-text { font-weight: 700; font-size: 1.15em; }
+#bubble-sub { font-size: 0.85em; opacity: 0.75; }
+#bubble-sub:empty { display: none; }
+.hidden { display: none !important; }
+@keyframes pf-pop { from { transform: translateX(-50%) scale(0.6); opacity: 0; } to { transform: translateX(-50%) scale(1); opacity: 1; } }
+#footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 8px 6px; font-size: 0.85em; opacity: 0.8; }
+#settings-btn { background: transparent; border: none; color: inherit; cursor: pointer; font-size: 1.1em; padding: 2px 4px; border-radius: 4px; line-height: 1; }
+#settings-btn:hover { background: var(--vscode-toolbar-hoverBackground); }

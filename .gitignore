@@ -1,0 +1,7 @@
+node_modules/
+pixelfriend/out/
+*.vsix
+activ/.build/
+activ/dist/
+.DS_Store
+.vscode-test/
