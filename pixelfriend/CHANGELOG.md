@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0
+
+- VS Code only: the macOS companion app and its state file sync were removed
+- New command: Float Buddy Over VS Code (always-on-top floating window; the character wanders inside it)
+- Chat bubble "Did you drink water?" with YES stays until tapped
+
 ## 0.3.0
 
 - New default avatar: a 2D cartoon character who raises a hand and says "Hi, do you have water?" with lip-sync

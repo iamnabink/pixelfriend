@@ -2,7 +2,7 @@
   "name": "pixelfriend",
   "displayName": "PixelFriend",
   "description": "A playful pixel companion that reminds you to drink water and celebrates when you do.",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "publisher": "whoamie",
   "license": "MIT",
   "engines": {
@@ -220,11 +220,6 @@
           "minimum": 1,
           "maximum": 30,
           "description": "Frames per second for custom sprite sheet animations."
-        },
-        "pixelfriend.stateFilePath": {
-          "type": "string",
-          "default": "",
-          "description": "Where PixelFriend writes its state file for the Activ menu bar app. Leave empty for the default (~/Library/Application Support/PixelFriend/state.json on macOS)."
         }
       }
     }

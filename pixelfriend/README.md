@@ -8,7 +8,7 @@ A tiny pixel buddy who walks around your sidebar, reminds you to drink water, an
 - **Cartoon character.** A 2D cartoon kid (messy hair, round glasses, orange hoodie, backpack) lives in the PixelFriend sidebar view and can also be opened as an editor tab. He breathes, blinks, looks around, and when a reminder fires he raises a hand, says "Hi, do you have water?" out loud with lip-synced mouth shapes, and shows a chat bubble asking **Did you drink water?** with a **YES** button. The bubble stays until you tap YES (or click him). Click him any time you drink.
 - **Pixel buddy.** Switch `pixelfriend.avatar.style` to `pixel` for the tiny walking sprite instead. Custom sprite sheets apply to this style.
 - **Celebration.** On **YES** the character throws both hands up with a big grin (the pixel buddy waves and dances), then a "Nice!" bubble shows your count for the day.
-- **Status bar countdown** and a shared state file for the Activ menu bar app (see the activ folder next to this extension).
+- **Status bar countdown** to the next sip.
 - **Customizable.** Change the buddy's colors, size and speed, or upload your own PNG sprite sheet.
 - **Settings page.** `PixelFriend: Open Settings` (also the ⚙ in the buddy view or the status bar item).
 
@@ -43,11 +43,10 @@ All settings live under `pixelfriend.*` and are editable from the settings page 
 | `sprite.frameWidth` / `frameHeight` | 32 / 32 | Size of one frame |
 | `sprite.walkFrames` / `waveFrames` / `danceFrames` | 4 / 2 / 4 | Frames per row |
 | `sprite.fps` | 8 | Custom sheet animation speed |
-| `stateFilePath` | "" | Override where the Activ state file is written |
 
 ## The character engine
 
-`media/character/character.bundle.js` is built from `../character/src/character.js`, a dependency-free SVG character shared with the Activ macOS app. Rebuild it with:
+`media/character/character.bundle.js` is built from `../character/src/character.js`, a dependency-free SVG character. Rebuild it with:
 
 ```bash
 npx esbuild ../character/src/character.js --bundle --format=iife --minify --outfile=../character/dist/character.bundle.js
@@ -93,7 +92,6 @@ src/reminder.ts      timer, persistence, notification, drink log
 src/avatarView.ts    sidebar + editor webviews for the buddy
 src/settingsPanel.ts settings webview
 src/sprite.ts        sprite upload/reset
-src/state.ts         shared state file for Activ
 src/sound.ts         macOS system sound for reminders
 media/avatar.js      canvas renderer, animations, chime
 media/settings.js    settings form
@@ -103,4 +101,4 @@ media/settings.js    settings form
 
 - VS Code does not let extensions draw onto the built-in Welcome page. The buddy is "always visible" via its sidebar view (revealed on startup) and an optional editor tab.
 - With the cartoon avatar the character speaks the reminder; with the pixel buddy a system sound plays via `afplay` on macOS.
-- When the Activ app answers a reminder, it writes `command.json` next to the state file and the extension applies it within two seconds.
+

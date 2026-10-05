@@ -7,7 +7,6 @@
   const drinksEl = /** @type {HTMLElement} */ (document.getElementById('drinks'));
   const pauseBtn = /** @type {HTMLButtonElement} */ (document.getElementById('pause-btn'));
   const spriteName = /** @type {HTMLElement} */ (document.getElementById('sprite-name'));
-  const statePath = /** @type {HTMLElement} */ (document.getElementById('state-path'));
   const scaleOut = /** @type {HTMLOutputElement} */ (document.getElementById('scale-out'));
   const speedOut = /** @type {HTMLOutputElement} */ (document.getElementById('speed-out'));
 
@@ -79,7 +78,6 @@
     snapshot = msg.snapshot;
     drinksEl.textContent = String(snapshot.drinksToday);
     spriteName.textContent = msg.spriteName || 'Built-in buddy';
-    statePath.textContent = msg.stateFilePath;
     renderNext();
   });
 

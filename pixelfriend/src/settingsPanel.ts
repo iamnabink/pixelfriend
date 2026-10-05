@@ -11,7 +11,6 @@ type HostMessage = {
   config: PixelFriendConfig;
   snapshot: ReminderSnapshot;
   spriteName: string | null;
-  stateFilePath: string;
 };
 
 type WebviewMessage =
@@ -26,7 +25,6 @@ export class SettingsPanel implements vscode.Disposable {
   constructor(
     private readonly context: vscode.ExtensionContext,
     private readonly getSnapshot: () => ReminderSnapshot,
-    private readonly getStatePath: () => string,
     private readonly runAction: (action: SettingsAction) => void | Promise<void>,
   ) {}
 
@@ -75,7 +73,6 @@ export class SettingsPanel implements vscode.Disposable {
       config,
       snapshot: this.getSnapshot(),
       spriteName: config.sprite.path ? path.basename(config.sprite.path) : null,
-      stateFilePath: this.getStatePath(),
     };
     void this.panel.webview.postMessage(message);
   }
@@ -198,11 +195,6 @@ export class SettingsPanel implements vscode.Disposable {
       </div>
     </section>
 
-    <section class="card">
-      <h2>Activ menu bar app</h2>
-      <p class="hint">PixelFriend writes the next reminder time here so Activ can show it in your macOS menu bar:</p>
-      <code id="state-path" class="path"></code>
-    </section>
   </main>
   <script nonce="${n}" src="${media('settings.js')}"></script>
 </body>

@@ -5,7 +5,6 @@ import { ReminderScheduler, ReminderSnapshot } from './reminder';
 import { SettingsPanel } from './settingsPanel';
 import { playHostSound } from './sound';
 import { resetSprite, uploadSprite } from './sprite';
-import { readCommand, resolveStatePath, writeSharedState } from './state';
 
 export function activate(context: vscode.ExtensionContext): void {
   const scheduler = new ReminderScheduler(
@@ -27,7 +26,6 @@ export function activate(context: vscode.ExtensionContext): void {
   const settings = new SettingsPanel(
     context,
     () => scheduler.snapshot(),
-    () => resolveStatePath(context, readConfig().stateFilePath),
     async (action) => {
       switch (action) {
         case 'uploadSprite': return uploadSprite(context);
@@ -60,38 +58,17 @@ export function activate(context: vscode.ExtensionContext): void {
     renderStatusBar(statusBar, snapshot);
     avatar.updateSchedule(snapshot);
     settings.refresh();
-    const config = readConfig();
-    void writeSharedState(resolveStatePath(context, config.stateFilePath), {
-      version: 1,
-      nextReminderAt: snapshot.nextAt,
-      intervalMinutes: snapshot.intervalMinutes,
-      paused: snapshot.paused,
-      drinksToday: snapshot.drinksToday,
-      lastDrinkAt: snapshot.lastDrinkAt,
-      updatedAt: Date.now(),
-      avatar: config.avatar,
-      sprite: config.sprite,
-    });
   };
 
   // Keep the status bar countdown fresh without touching the scheduler.
   const ticker = setInterval(() => renderStatusBar(statusBar, scheduler.snapshot()), 1000);
-  // Heartbeat so the Activ menu bar app knows VS Code is driving the schedule.
-  const heartbeat = setInterval(() => syncSnapshot(scheduler.snapshot()), 60_000);
-  // Activ can answer a reminder on our behalf; it drops a small command file next to the state file.
-  const commandPoll = setInterval(async () => {
-    const cmd = await readCommand(resolveStatePath(context, readConfig().stateFilePath));
-    if (!cmd) { return; }
-    if (cmd.action === 'drink') { drink(); }
-    else if (cmd.action === 'snooze') { scheduler.snooze(); }
-  }, 2000);
 
   context.subscriptions.push(
     scheduler,
     avatar,
     settings,
     statusBar,
-    { dispose: () => { clearInterval(ticker); clearInterval(heartbeat); clearInterval(commandPoll); } },
+    { dispose: () => clearInterval(ticker) },
     vscode.window.registerWebviewViewProvider(AvatarViewProvider.viewType, avatar, {
       webviewOptions: { retainContextWhenHidden: true },
     }),

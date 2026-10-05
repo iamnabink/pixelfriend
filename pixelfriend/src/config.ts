@@ -29,7 +29,6 @@ export interface PixelFriendConfig {
   showOnStartup: boolean;
   avatar: AvatarConfig;
   sprite: SpriteConfig;
-  stateFilePath: string;
 }
 
 const SECTION = 'pixelfriend';
@@ -59,7 +58,6 @@ export function readConfig(): PixelFriendConfig {
       danceFrames: Math.max(1, c.get<number>('sprite.danceFrames', 4)),
       fps: clamp(c.get<number>('sprite.fps', 8), 1, 30),
     },
-    stateFilePath: c.get<string>('stateFilePath', ''),
   };
 }
 
