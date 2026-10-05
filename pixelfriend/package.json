@@ -49,6 +49,12 @@
         "icon": "$(smiley)"
       },
       {
+        "command": "pixelfriend.floatBuddy",
+        "title": "Float Buddy Over VS Code",
+        "category": "PixelFriend",
+        "icon": "$(multiple-windows)"
+      },
+      {
         "command": "pixelfriend.openSettings",
         "title": "Open Settings",
         "category": "PixelFriend",
@@ -91,6 +97,11 @@
           "command": "pixelfriend.openAvatar",
           "when": "view == pixelfriend.avatarView",
           "group": "navigation@2"
+        },
+        {
+          "command": "pixelfriend.floatBuddy",
+          "when": "view == pixelfriend.avatarView",
+          "group": "navigation@0"
         }
       ]
     },

@@ -97,6 +97,7 @@ export function activate(context: vscode.ExtensionContext): void {
     }),
     scheduler.onDidChange(syncSnapshot),
     vscode.commands.registerCommand('pixelfriend.openAvatar', () => avatar.openInEditor()),
+    vscode.commands.registerCommand('pixelfriend.floatBuddy', () => avatar.floatOverVSCode()),
     vscode.commands.registerCommand('pixelfriend.openSettings', () => settings.show()),
     vscode.commands.registerCommand('pixelfriend.drinkNow', drink),
     vscode.commands.registerCommand('pixelfriend.remindNow', () => scheduler.fire()),

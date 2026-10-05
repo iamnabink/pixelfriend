@@ -47,16 +47,16 @@ export class AvatarViewProvider implements vscode.WebviewViewProvider, vscode.Di
     });
   }
 
-  /** Open (or focus) the buddy as an editor tab so it stays on screen beside your code. */
-  openInEditor(): void {
+  /** Open (or focus) the buddy as an editor tab. In this surface the cartoon wanders around the tab. */
+  openInEditor(focus = false): vscode.WebviewPanel {
     if (this.panel) {
-      this.panel.reveal(undefined, true);
-      return;
+      this.panel.reveal(undefined, !focus);
+      return this.panel;
     }
     const panel = vscode.window.createWebviewPanel(
       'pixelfriend.avatarPanel',
       'PixelFriend',
-      { viewColumn: vscode.ViewColumn.Beside, preserveFocus: true },
+      { viewColumn: vscode.ViewColumn.Beside, preserveFocus: !focus },
       { retainContextWhenHidden: true },
     );
     panel.iconPath = vscode.Uri.joinPath(this.context.extensionUri, 'media', 'icon.svg');
@@ -66,6 +66,23 @@ export class AvatarViewProvider implements vscode.WebviewViewProvider, vscode.Di
       this.webviews.delete(panel.webview);
       this.panel = undefined;
     });
+    return panel;
+  }
+
+  /**
+   * Pop the buddy out into his own small VS Code window and keep it on top, so he floats over your code.
+   * Uses VS Code's floating editor windows (1.85+) and "always on top" (1.94+); older builds just get the tab.
+   */
+  async floatOverVSCode(): Promise<void> {
+    this.openInEditor(true);
+    await new Promise((r) => setTimeout(r, 150));
+    try {
+      await vscode.commands.executeCommand('workbench.action.moveEditorToNewWindow');
+      await new Promise((r) => setTimeout(r, 400));
+      await vscode.commands.executeCommand('workbench.action.toggleWindowAlwaysOnTop');
+    } catch (err) {
+      console.warn('[PixelFriend] floating window not supported here', err);
+    }
   }
 
   async revealSidebar(): Promise<void> {
@@ -161,7 +178,7 @@ export class AvatarViewProvider implements vscode.WebviewViewProvider, vscode.Di
   }
 
   private html(webview: vscode.Webview): string {
-    if (readConfig().avatar.style === 'cartoon') { return this.htmlCartoon(webview); }
+    if (readConfig().avatar.style === 'cartoon') { return this.htmlCartoon(webview, webview === this.panel?.webview); }
     const n = nonce();
     const media = (file: string) =>
       webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'media', file));
@@ -197,7 +214,7 @@ export class AvatarViewProvider implements vscode.WebviewViewProvider, vscode.Di
 </html>`;
   }
 
-  private htmlCartoon(webview: vscode.Webview): string {
+  private htmlCartoon(webview: vscode.Webview, roam: boolean): string {
     const n = nonce();
     const media = (...parts: string[]) =>
       webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'media', ...parts));
@@ -212,6 +229,7 @@ export class AvatarViewProvider implements vscode.WebviewViewProvider, vscode.Di
     const config = JSON.stringify({
       framing: 'full',
       bg: 'clean',
+      roam,
       shirtColor: avatar.shirtColor,
       hairColor: avatar.hairColor,
       skinColor: avatar.skinColor,

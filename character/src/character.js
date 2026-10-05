@@ -41,7 +41,8 @@ const shirtDark = shade(colors.shirt, -0.18);
 const shirtLight = shade(colors.shirt, 0.12);
 const pantsLight = shade(colors.pants, 0.25);
 const host = document.getElementById('character') || document.body;
-host.innerHTML = `
+const ROAM = params.roam === true || params.roam === 'true';
+host.innerHTML = `<div class="pf-actor">
 <svg id="pf-svg" viewBox="0 ${FRAMING === 'half' ? -60 : -95} 300 ${FRAMING === 'half' ? 340 : 495}" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg" aria-label="PixelFriend">
   <defs>
     <clipPath id="eyeL"><ellipse cx="128" cy="110" rx="11" ry="12"/></clipPath>
@@ -142,7 +143,8 @@ host.innerHTML = `
       </g>
     </g>
   </g>
-</svg>`;
+</svg></div>`;
+const actor = host.querySelector('.pf-actor');
 
 function shade(hex, amount) {
   const m = /^#?([0-9a-f]{6})$/i.exec(hex || '');
@@ -155,7 +157,10 @@ function shade(hex, amount) {
 // Chat bubble: "Did you drink water?" + YES. Stays until YES is tapped (or the host celebrates).
 const bubbleStyle = document.createElement('style');
 bubbleStyle.textContent = `
-  #character { position: relative; }
+  #character { position: relative; overflow: hidden; }
+  .pf-actor { position: relative; width: 100%; height: 100%; }
+  .pf-actor svg { width: 100%; height: 100%; display: block; }
+  .pf-roam .pf-actor { position: absolute; left: 0; top: 0; width: 170px; height: 250px; will-change: transform; }
   .pf-bubble { position: absolute; top: 2%; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px;
     background: #fff; color: #2a1a10; border: 3px solid #3a2414; border-radius: 16px; padding: 10px 14px; font: 600 15px/1.2 -apple-system, "Segoe UI", system-ui, sans-serif;
     white-space: normal; text-align: center; max-width: calc(100% - 16px); box-sizing: border-box; box-shadow: 0 6px 18px rgba(0,0,0,.25); z-index: 5; animation: pf-bubble-pop 280ms cubic-bezier(.2,1.4,.4,1) both; }
@@ -171,7 +176,8 @@ document.head.appendChild(bubbleStyle);
 const bubble = document.createElement('div');
 bubble.className = 'pf-bubble hidden';
 bubble.innerHTML = `<span class="pf-bubble-text">${BUBBLE_TEXT}</span><button class="pf-bubble-yes" type="button">YES 💧</button>`;
-host.appendChild(bubble);
+actor.appendChild(bubble);
+if (ROAM) host.classList.add('pf-roam');
 bubble.querySelector('.pf-bubble-yes').addEventListener('click', (e) => {
   e.stopPropagation();
   setMode('celebrate');
@@ -179,7 +185,7 @@ bubble.querySelector('.pf-bubble-yes').addEventListener('click', (e) => {
 });
 
 // Compact bubble for small hosts (the desktop overlay)
-function fitBubble() { host.classList.toggle('pf-small', (host.clientWidth || window.innerWidth) < 210); }
+function fitBubble() { host.classList.toggle('pf-small', (actor.clientWidth || window.innerWidth) < 210); }
 fitBubble();
 window.addEventListener('resize', fitBubble);
 
@@ -189,6 +195,27 @@ const el = {
   armL: $('armL'), armLFore: $('armL-fore'), handL: $('handL'), pupils: $('pupils'), lidL: $('lidL'), lidR: $('lidR'),
   brows: $('brows'), cheeks: $('cheeks'), mouthOpen: $('mouthOpen'), teeth: $('teeth'), tongue: $('tongue'), mouthLine: $('mouthLine'),
 };
+
+// ───────────── Roaming (floating window / editor tab) ─────────────
+const roam = { x: 20, y: 20, target: null, idleUntil: 0 };
+function roamArea() {
+  return { w: Math.max(0, host.clientWidth - actor.clientWidth), h: Math.max(0, host.clientHeight - actor.clientHeight) };
+}
+function updateRoam(now, dt) {
+  if (!ROAM) return;
+  const area = roamArea();
+  roam.x = Math.min(roam.x, area.w); roam.y = Math.min(roam.y, area.h);
+  const busy = state.mode !== 'idle';
+  if (!busy && now >= roam.idleUntil) {
+    if (!roam.target) roam.target = { x: Math.random() * area.w, y: Math.random() * area.h };
+    const dx = roam.target.x - roam.x, dy = roam.target.y - roam.y;
+    const dist = Math.hypot(dx, dy);
+    const step = 40 * dt;
+    if (dist <= step) { roam.x = roam.target.x; roam.y = roam.target.y; roam.target = null; roam.idleUntil = now + 3 + Math.random() * 10; }
+    else { roam.x += dx / dist * step; roam.y += dy / dist * step; }
+  }
+  actor.style.transform = `translate(${roam.x.toFixed(1)}px, ${roam.y.toFixed(1)}px)`;
+}
 
 // ───────────── Animation ─────────────
 const easeOut = (x) => 1 - Math.pow(1 - x, 3);
@@ -368,6 +395,7 @@ function tick() {
   updateArms(now, dt);
   updateBody(now, dt);
   updateFace(now, dt);
+  updateRoam(now, dt);
 }
 scheduleSaccade(0);
 tick();
