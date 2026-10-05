@@ -18,6 +18,7 @@ A tiny pixel buddy who walks around your sidebar, reminds you to drink water, an
 | --- | --- |
 | `PixelFriend: Open Settings` | Opens the settings page |
 | `PixelFriend: Open Buddy in Editor` | Shows the buddy in an editor tab beside your code |
+| `PixelFriend: Float Buddy Over VS Code` | Pops the buddy into a small always-on-top VS Code window where he wanders around |
 | `PixelFriend: I Drank Water!` | Logs a drink and celebrates |
 | `PixelFriend: Show Reminder Now` | Fires the notification immediately |
 | `PixelFriend: Pause / Resume Reminders` | Pauses the timer (buddy keeps walking) |
@@ -81,7 +82,7 @@ npm run watch      # or: npm run compile
 Press **F5** to launch an Extension Development Host. Package with:
 
 ```bash
-npx @vscode/vsce package --allow-missing-repository
+npx @vscode/vsce package --allow-missing-repository --no-dependencies
 ```
 
 ### Layout
